@@ -89,11 +89,11 @@ namespace mongo {
 
         rocksdb::DB* _db;  // not owned
 
-        // Don't trigger compactions more often than every 10min
-        static const int kMinCompactionIntervalMins = 10;
-        // We'll compact the prefix if any operation on the prefix reports more than 50.000
+        // Don't trigger compactions more often than every 60min
+        static const int kMinCompactionIntervalMins = 60;
+        // We'll compact the prefix if any operation on the prefix reports more than 1,000,000
         // deletions it had to skip over (this is about 10ms extra overhead)
-        static const int kSkippedDeletionsThreshold = 50000;
+        static const int kSkippedDeletionsThreshold = 1000000;
 
         // thread for async execution of range compactions
         std::unique_ptr<CompactionBackgroundJob> _compactionJob;
