@@ -297,7 +297,7 @@ namespace mongo {
         {
             stdx::lock_guard<stdx::mutex> lk(_lock);
             if (_timer.minutes() >= kMinCompactionIntervalMins) {
-                schedule = true;
+                // schedule = true;
                 _timer.reset();
             }
         }
