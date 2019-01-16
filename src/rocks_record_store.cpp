@@ -623,24 +623,24 @@ namespace mongo {
         delete txn->releaseRecoveryUnit();
         txn->setRecoveryUnit(realRecoveryUnit, realRUstate);
 
-        if (_isOplog) {
-            if ((_oplogSinceLastCompaction.minutes() >= kOplogCompactEveryMins) ||
-            (_oplogKeyTracker->getDeletedSinceCompaction() >= kOplogCompactEveryDeletedRecords)) {
-                log() << "Scheduling oplog compactions. time since last " << _oplogSinceLastCompaction.minutes() <<
-                    " deleted since last " << _oplogKeyTracker->getDeletedSinceCompaction();
-                _oplogSinceLastCompaction.reset();
-                // schedule compaction for oplog
-                std::string oldestAliveKey(_makePrefixedKey(_prefix, _cappedOldestKeyHint));
-                _compactionScheduler->compactOplog(_prefix, oldestAliveKey);
+       // if (_isOplog) {
+       //     if ((_oplogSinceLastCompaction.minutes() >= kOplogCompactEveryMins) ||
+       //     (_oplogKeyTracker->getDeletedSinceCompaction() >= kOplogCompactEveryDeletedRecords)) {
+       //         log() << "Scheduling oplog compactions. time since last " << _oplogSinceLastCompaction.minutes() <<
+       //             " deleted since last " << _oplogKeyTracker->getDeletedSinceCompaction();
+       //         _oplogSinceLastCompaction.reset();
+       //         // schedule compaction for oplog
+       //         std::string oldestAliveKey(_makePrefixedKey(_prefix, _cappedOldestKeyHint));
+       //         _compactionScheduler->compactOplog(_prefix, oldestAliveKey);
 
-                // schedule compaction for oplog tracker
-                std::string oplogKeyTrackerPrefix(rocksGetNextPrefix(_prefix));
-                oldestAliveKey = _makePrefixedKey(oplogKeyTrackerPrefix, _cappedOldestKeyHint);
-                _compactionScheduler->compactOplog(oplogKeyTrackerPrefix, oldestAliveKey);
+       //         // schedule compaction for oplog tracker
+       //         std::string oplogKeyTrackerPrefix(rocksGetNextPrefix(_prefix));
+       //         oldestAliveKey = _makePrefixedKey(oplogKeyTrackerPrefix, _cappedOldestKeyHint);
+       //         _compactionScheduler->compactOplog(oplogKeyTrackerPrefix, oldestAliveKey);
 
-                _oplogKeyTracker->resetDeletedSinceCompaction();
-            }
-        }
+       //         _oplogKeyTracker->resetDeletedSinceCompaction();
+       //     }
+       // }
 
         return docsRemoved;
     }
