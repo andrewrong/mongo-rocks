@@ -247,7 +247,7 @@ namespace mongo {
     }
 
     void CompactionBackgroundJob::compact(const CompactOp& op) {
-        Timer start;
+        Timer startTime;
 
         rocksdb::Slice start_slice(op._start_str);
         rocksdb::Slice end_slice(op._end_str);
@@ -255,7 +255,7 @@ namespace mongo {
         rocksdb::Slice* start = !op._start_str.empty() ? &start_slice : nullptr;
         rocksdb::Slice* end = !op._end_str.empty() ? &end_slice : nullptr;
 
-        string fullCompaction = "";
+        std::string fullCompaction = "";
         if (start == nullptr && end == nullptr) {
             fullCompaction = "Full "
         }
@@ -278,7 +278,7 @@ namespace mongo {
         compact_options.exclusive_manual_compaction = false;
         auto s = _db->CompactRange(compact_options, start, end);
         
-        auto compactionCsMs = start.millis();
+        auto compactionCsMs = startTime.millis();
 
         LOG(0) << "End " << fullCompaction << "Compaction of range:"
             << (start ? start->ToString(true) : "<empty>") << " .. "
@@ -307,7 +307,9 @@ namespace mongo {
     const std::string RocksCompactionScheduler::kDroppedPrefix("\0\0\0\0droppedprefix-", 18);
 
     RocksCompactionScheduler::RocksCompactionScheduler(bool manualPrefixCompaction) 
-        : _db(nullptr), _droppedPrefixesCount(0), _manualPrefixCompaction(manualPrefixCompaction)  {
+        : _db(nullptr), 
+        _manualPrefixCompaction(manualPrefixCompaction), 
+        _droppedPrefixesCount(0)  {
             log() << "[rocksdb] manual prefix compaction:" << _manualPrefixCompaction;
         }
 
