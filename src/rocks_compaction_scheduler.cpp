@@ -257,7 +257,7 @@ namespace mongo {
 
         std::string fullCompaction = "";
         if (start == nullptr && end == nullptr) {
-            fullCompaction = "Full "
+            fullCompaction = "Full ";
         }
 
         LOG(0) << "Starting " << fullCompaction << "compaction of range:"
