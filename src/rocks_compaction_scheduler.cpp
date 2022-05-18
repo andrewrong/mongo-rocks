@@ -324,12 +324,14 @@ namespace mongo {
         {
             stdx::lock_guard<stdx::mutex> lk(_lock);
             if (_timer.minutes() >= kMinCompactionIntervalMins) {
-                schedule = true; //恢复手动触发的compaction
-               _timer.reset();
+                if (_manualPrefixCompaction) {
+                    schedule = true; //恢复手动触发的compaction
+                    _timer.reset();
+                }
             }
         }
 
-        if (schedule && _manualPrefixCompaction) {
+        if (schedule) {
             log() << "Scheduling compaction to clean up tombstones for prefix "
                   << rocksdb::Slice(prefix).ToString(true);
             // we schedule compaction now (ignoring error)
