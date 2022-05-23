@@ -326,8 +326,8 @@ namespace mongo {
             if (_timer.minutes() >= kMinCompactionIntervalMins) {
                 if (_manualPrefixCompaction) {
                     schedule = true; //恢复手动触发的compaction
-                    _timer.reset();
                 }
+                _timer.reset();
             }
         }
 
